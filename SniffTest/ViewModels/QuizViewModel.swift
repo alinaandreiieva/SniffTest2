@@ -60,9 +60,9 @@ final class QuizViewModel: ObservableObject {
         case .beginner:
             return "You handled the core red flags. Next up: naming the exact disinformation technique."
         case .intermediate:
-            return "You are ready for mixed questions under pressure."
+            return "You are ready for the visual challenge."
         case .advanced:
-            return "Nice work. You completed the timed mixed challenge."
+            return "Nice work. You completed the timed real-vs-AI image challenge."
         }
     }
 
@@ -152,6 +152,21 @@ final class QuizViewModel: ObservableObject {
         stopTimer()
     }
 
+    func returnToOverview() {
+        stopTimer()
+        currentLevel = .beginner
+        questions = questionsForLevel(.beginner)
+        currentQuestionIndex = 0
+        feedback = nil
+        selectedAnswer = nil
+        hasAnsweredCurrentQuestion = false
+        isRoundComplete = false
+        didEndEarly = false
+        numberOfCorrectAnswers = 0
+        remainingTime = 0
+        showsOverview = true
+    }
+
     private func load(level: QuizLevel) {
         showsOverview = false
         currentLevel = level
@@ -174,7 +189,7 @@ final class QuizViewModel: ObservableObject {
         case .intermediate:
             return QuizContent.intermediateQuestions
         case .advanced:
-            return Array((QuizContent.beginnerQuestions + QuizContent.intermediateQuestions).shuffled().prefix(QuizContent.questionsPerLevel))
+            return QuizContent.advancedQuestions
         }
     }
 

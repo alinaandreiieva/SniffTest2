@@ -39,7 +39,7 @@ enum QuizLevel: String, CaseIterable, Identifiable {
         case .intermediate:
             return "Name the disinformation technique behind the post."
         case .advanced:
-            return "Race against the timer through a mixed challenge."
+            return "Race against the timer and judge whether each image is real or AI-generated."
         }
     }
 
@@ -102,6 +102,11 @@ enum QuestionTone {
     case rose
 }
 
+struct BooleanAnswerLabels {
+    let trueLabel: String
+    let falseLabel: String
+}
+
 struct QuizQuestion: Identifiable {
     let id = UUID()
     let title: String
@@ -110,10 +115,40 @@ struct QuizQuestion: Identifiable {
     let mediaHeadline: String
     let mediaSource: String
     let mediaBadge: String
+    let mediaAssetName: String?
     let tone: QuestionTone
     let level: QuizLevel
     let mode: QuestionMode
     let explanation: String
+    let booleanAnswerLabels: BooleanAnswerLabels?
+
+    init(
+        title: String,
+        detail: String,
+        mediaSymbol: String,
+        mediaHeadline: String,
+        mediaSource: String,
+        mediaBadge: String,
+        mediaAssetName: String? = nil,
+        tone: QuestionTone,
+        level: QuizLevel,
+        mode: QuestionMode,
+        explanation: String,
+        booleanAnswerLabels: BooleanAnswerLabels? = nil
+    ) {
+        self.title = title
+        self.detail = detail
+        self.mediaSymbol = mediaSymbol
+        self.mediaHeadline = mediaHeadline
+        self.mediaSource = mediaSource
+        self.mediaBadge = mediaBadge
+        self.mediaAssetName = mediaAssetName
+        self.tone = tone
+        self.level = level
+        self.mode = mode
+        self.explanation = explanation
+        self.booleanAnswerLabels = booleanAnswerLabels
+    }
 
     var answers: [QuizAnswer] {
         switch mode {
@@ -121,6 +156,18 @@ struct QuizQuestion: Identifiable {
             return [.boolean(true), .boolean(false)]
         case .category:
             return DisinformationCategory.allCases.map(QuizAnswer.category)
+        }
+    }
+
+    func label(for answer: QuizAnswer) -> String {
+        switch answer {
+        case .boolean(let value):
+            if let booleanAnswerLabels {
+                return value ? booleanAnswerLabels.trueLabel : booleanAnswerLabels.falseLabel
+            }
+            return value ? "True" : "False"
+        case .category(let category):
+            return category.rawValue
         }
     }
 
@@ -150,8 +197,6 @@ struct AnswerFeedback: Identifiable {
 }
 
 enum QuizContent {
-    static let questionsPerLevel = 5
-
     static let beginnerQuestions: [QuizQuestion] = [
         QuizQuestion(
             title: "A post says you must share it within 10 minutes to keep your bank account safe.",
@@ -287,6 +332,149 @@ enum QuizContent {
             level: .intermediate,
             mode: .category(correctCategory: .imposterContent),
             explanation: "This is imposter content because the post is pretending to come from a trusted organization in order to borrow its credibility."
+        )
+    ]
+
+    static let advancedQuestions: [QuizQuestion] = [
+        QuizQuestion(
+            title: "Real photo or AI image?",
+            detail: "Use only the visual clues in the image and decide whether it is authentic or AI-generated.",
+            mediaSymbol: "photo",
+            mediaHeadline: "Advanced image challenge",
+            mediaSource: "Visual-only round",
+            mediaBadge: "Image 1",
+            mediaAssetName: "advanced-1",
+            tone: .slate,
+            level: .advanced,
+            mode: .trueFalse(correctAnswer: true),
+            explanation: "This image is real.",
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+        ),
+        QuizQuestion(
+            title: "Real photo or AI image?",
+            detail: "Look for subtle issues with texture, depth, reflections, and repeated details before answering.",
+            mediaSymbol: "photo",
+            mediaHeadline: "Advanced image challenge",
+            mediaSource: "Visual-only round",
+            mediaBadge: "Image 2",
+            mediaAssetName: "advanced-2",
+            tone: .slate,
+            level: .advanced,
+            mode: .trueFalse(correctAnswer: true),
+            explanation: "This image is real.",
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+        ),
+        QuizQuestion(
+            title: "Real photo or AI image?",
+            detail: "Look for subtle issues with texture, depth, reflections, and repeated details before answering.",
+            mediaSymbol: "photo",
+            mediaHeadline: "Advanced image challenge",
+            mediaSource: "Visual-only round",
+            mediaBadge: "Image 3",
+            mediaAssetName: "advanced-3",
+            tone: .slate,
+            level: .advanced,
+            mode: .trueFalse(correctAnswer: false),
+            explanation: "This image is AI-generated.",
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+        ),
+        QuizQuestion(
+            title: "Real photo or AI image?",
+            detail: "Look for subtle issues with texture, depth, reflections, and repeated details before answering.",
+            mediaSymbol: "photo",
+            mediaHeadline: "Advanced image challenge",
+            mediaSource: "Visual-only round",
+            mediaBadge: "Image 4",
+            mediaAssetName: "advanced-4",
+            tone: .slate,
+            level: .advanced,
+            mode: .trueFalse(correctAnswer: false),
+            explanation: "This image is AI-generated.",
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+        ),
+        QuizQuestion(
+            title: "Real photo or AI image?",
+            detail: "Look for subtle issues with texture, depth, reflections, and repeated details before answering.",
+            mediaSymbol: "photo",
+            mediaHeadline: "Advanced image challenge",
+            mediaSource: "Visual-only round",
+            mediaBadge: "Image 5",
+            mediaAssetName: "advanced-5",
+            tone: .slate,
+            level: .advanced,
+            mode: .trueFalse(correctAnswer: true),
+            explanation: "This image is real.",
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+        ),
+        QuizQuestion(
+            title: "Real photo or AI image?",
+            detail: "Look for subtle issues with texture, depth, reflections, and repeated details before answering.",
+            mediaSymbol: "photo",
+            mediaHeadline: "Advanced image challenge",
+            mediaSource: "Visual-only round",
+            mediaBadge: "Image 6",
+            mediaAssetName: "advanced-6",
+            tone: .slate,
+            level: .advanced,
+            mode: .trueFalse(correctAnswer: false),
+            explanation: "This image is AI-generated.",
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+        ),
+        QuizQuestion(
+            title: "Real photo or AI image?",
+            detail: "Look for subtle issues with texture, depth, reflections, and repeated details before answering.",
+            mediaSymbol: "photo",
+            mediaHeadline: "Advanced image challenge",
+            mediaSource: "Visual-only round",
+            mediaBadge: "Image 7",
+            mediaAssetName: "advanced-7",
+            tone: .slate,
+            level: .advanced,
+            mode: .trueFalse(correctAnswer: true),
+            explanation: "This image is real.",
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+        ),
+        QuizQuestion(
+            title: "Real photo or AI image?",
+            detail: "Look for subtle issues with texture, depth, reflections, and repeated details before answering.",
+            mediaSymbol: "photo",
+            mediaHeadline: "Advanced image challenge",
+            mediaSource: "Visual-only round",
+            mediaBadge: "Image 8",
+            mediaAssetName: "advanced-8",
+            tone: .slate,
+            level: .advanced,
+            mode: .trueFalse(correctAnswer: false),
+            explanation: "This image is AI-generated.",
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+        ),
+        QuizQuestion(
+            title: "Real photo or AI image?",
+            detail: "Look for subtle issues with texture, depth, reflections, and repeated details before answering.",
+            mediaSymbol: "photo",
+            mediaHeadline: "Advanced image challenge",
+            mediaSource: "Visual-only round",
+            mediaBadge: "Image 9",
+            mediaAssetName: "advanced-9",
+            tone: .slate,
+            level: .advanced,
+            mode: .trueFalse(correctAnswer: true),
+            explanation: "This image is real.",
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+        ),
+        QuizQuestion(
+            title: "Real photo or AI image?",
+            detail: "Look for subtle issues with texture, depth, reflections, and repeated details before answering.",
+            mediaSymbol: "photo",
+            mediaHeadline: "Advanced image challenge",
+            mediaSource: "Visual-only round",
+            mediaBadge: "Image 10",
+            mediaAssetName: "advanced-10",
+            tone: .slate,
+            level: .advanced,
+            mode: .trueFalse(correctAnswer: false),
+            explanation: "This image is AI-generated.",
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
         )
     ]
 }

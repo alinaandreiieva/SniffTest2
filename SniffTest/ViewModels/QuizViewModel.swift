@@ -111,7 +111,7 @@ final class QuizViewModel: ObservableObject {
             feedback = AnswerFeedback(
                 title: feedbackTitle,
                 message: loadingMessage(for: currentLevel),
-                detailMessage: nil,
+                detailMessages: [],
                 kind: feedbackKind
             )
 
@@ -119,7 +119,7 @@ final class QuizViewModel: ObservableObject {
                 guard let self else { return }
 
                 let message: String
-                let detailMessage: String?
+                let detailMessages: [String]
 
                 do {
                     let predictionInput = predictionText(for: currentQuestion)
@@ -128,11 +128,11 @@ final class QuizViewModel: ObservableObject {
                         level: currentLevel
                     )
                     message = currentQuestion.explanation
-                    detailMessage = predictionDetailLines(for: prediction)
+                    detailMessages = predictionDetailLines(for: prediction)
                 } catch {
                     let apiError = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
                     message = currentQuestion.explanation
-                    detailMessage = "Prediction check failed: \(apiError)"
+                    detailMessages = ["Prediction check failed: \(apiError)"]
                 }
 
                 guard !Task.isCancelled else { return }
@@ -140,7 +140,7 @@ final class QuizViewModel: ObservableObject {
                 feedback = AnswerFeedback(
                     title: feedbackTitle,
                     message: message,
-                    detailMessage: detailMessage,
+                    detailMessages: detailMessages,
                     kind: feedbackKind
                 )
                 isLoadingModelPrediction = false
@@ -150,7 +150,7 @@ final class QuizViewModel: ObservableObject {
             feedback = AnswerFeedback(
                 title: feedbackTitle,
                 message: currentQuestion.explanation,
-                detailMessage: nil,
+                detailMessages: [],
                 kind: feedbackKind
             )
         }
@@ -292,7 +292,7 @@ final class QuizViewModel: ObservableObject {
         feedback = AnswerFeedback(
             title: "Time's up",
             message: currentQuestion.explanation,
-            detailMessage: nil,
+            detailMessages: [],
             kind: .timeout
         )
     }
@@ -302,7 +302,7 @@ final class QuizViewModel: ObservableObject {
         timer = nil
     }
 
-    private func predictionDetailLines(for prediction: BeginnerPrediction) -> String {
+    private func predictionDetailLines(for prediction: BeginnerPrediction) -> [String] {
         let displayLabel = prediction.label.map { $0 == "FAKE" ? "Bluff" : $0 }
         let probabilityLines = prediction.probabilities
             .sorted { $0.value > $1.value }
@@ -324,7 +324,6 @@ final class QuizViewModel: ObservableObject {
             probabilityLines.isEmpty ? nil : "**Scores:** \(probabilityLines)"
         ]
         .compactMap { $0 }
-        .joined(separator: "\n\n\n")
     }
 
     private func predictionText(for question: QuizQuestion) -> String {

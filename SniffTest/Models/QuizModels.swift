@@ -196,7 +196,7 @@ struct AnswerFeedback: Identifiable {
     let id = UUID()
     let title: String
     let message: String
-    let detailMessage: String?
+    let detailMessages: [String]
     let kind: FeedbackKind
 }
 

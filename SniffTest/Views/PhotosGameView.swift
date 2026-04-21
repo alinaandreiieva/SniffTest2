@@ -328,16 +328,14 @@ private struct FeedbackOverlayView: View {
         return AttributedString(feedback.message)
     }
 
-    private var detailMessageText: AttributedString? {
-        guard let detailMessage = feedback.detailMessage, !detailMessage.isEmpty else {
-            return nil
-        }
+    private var detailMessageTexts: [AttributedString] {
+        feedback.detailMessages.compactMap { detailMessage in
+            if let markdown = try? AttributedString(markdown: detailMessage) {
+                return markdown
+            }
 
-        if let markdown = try? AttributedString(markdown: detailMessage) {
-            return markdown
+            return AttributedString(detailMessage)
         }
-
-        return AttributedString(detailMessage)
     }
 
     private var tint: Color {
@@ -377,14 +375,19 @@ private struct FeedbackOverlayView: View {
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.leading)
 
-                if let detailMessageText {
+                if !detailMessageTexts.isEmpty {
                     Color.clear
                         .frame(height: 10)
 
-                    Text(detailMessageText)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.leading)
+                    VStack(alignment: .leading, spacing: 12) {
+                        ForEach(Array(detailMessageTexts.enumerated()), id: \.offset) { _, detailMessageText in
+                            Text(detailMessageText)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.leading)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
 

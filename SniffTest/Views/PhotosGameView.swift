@@ -48,7 +48,7 @@ struct PhotosGameView: View {
                     FeedbackOverlayView(
                         feedback: feedback,
                         actionTitle: viewModel.feedbackButtonTitle,
-                        isActionDisabled: viewModel.isLoadingBeginnerPrediction,
+                        isActionDisabled: viewModel.isLoadingModelPrediction,
                         action: viewModel.advance
                     )
                         .padding(.horizontal, 24)
@@ -320,6 +320,26 @@ private struct FeedbackOverlayView: View {
     let isActionDisabled: Bool
     let action: () -> Void
 
+    private var messageText: AttributedString {
+        if let markdown = try? AttributedString(markdown: feedback.message) {
+            return markdown
+        }
+
+        return AttributedString(feedback.message)
+    }
+
+    private var detailMessageText: AttributedString? {
+        guard let detailMessage = feedback.detailMessage, !detailMessage.isEmpty else {
+            return nil
+        }
+
+        if let markdown = try? AttributedString(markdown: detailMessage) {
+            return markdown
+        }
+
+        return AttributedString(detailMessage)
+    }
+
     private var tint: Color {
         switch feedback.kind {
         case .success:
@@ -352,10 +372,20 @@ private struct FeedbackOverlayView: View {
                 Text(feedback.title)
                     .font(.title3.weight(.semibold))
 
-                Text(feedback.message)
+                Text(messageText)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
+                    .multilineTextAlignment(.leading)
+
+                if let detailMessageText {
+                    Color.clear
+                        .frame(height: 10)
+
+                    Text(detailMessageText)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.leading)
+                }
             }
 
             Button(action: action) {

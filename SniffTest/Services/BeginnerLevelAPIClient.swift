@@ -2,7 +2,7 @@
 //  BeginnerLevelAPIClient.swift
 //  SniffTest
 //
-//  Created by Codex on 21/4/26.
+//  Created by Alina Andreieva on 21/4/26.
 //
 
 import Foundation

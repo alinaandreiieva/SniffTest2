@@ -2,7 +2,7 @@
 //  ProfileComponents.swift
 //  SniffTest
 //
-//  Created by OpenAI on 4/21/26.
+//  Created by Alina Andreieva on 21/4/26.
 //
 
 import SwiftUI

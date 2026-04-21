@@ -31,6 +31,12 @@ struct ContentView: View {
                             Label("Legal", systemImage: "doc.text")
                         }
                         .tag(AppTab.legal)
+
+                    ProfileTabView()
+                        .tabItem {
+                            Label("Profile", systemImage: "person.crop.circle")
+                        }
+                        .tag(AppTab.profile)
                 }
                 .background(AppTheme.background.ignoresSafeArea())
                 .toolbarBackground(AppTheme.background, for: .tabBar)

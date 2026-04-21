@@ -103,7 +103,7 @@ struct PhotosGameView: View {
         .padding(20)
         .background(
             RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(AppTheme.background)
+                .fill(AppTheme.quizContainer)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 30, style: .continuous)
@@ -155,7 +155,7 @@ struct PhotosGameView: View {
         .padding(24)
         .background(
             RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(AppTheme.background)
+                .fill(AppTheme.quizContainer)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 30, style: .continuous)
@@ -182,7 +182,7 @@ private struct AnswerButton: View {
             .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(isSelected ? Color.indigo.opacity(0.14) : AppTheme.background)
+                    .fill(isSelected ? Color.indigo.opacity(0.14) : .white.opacity(0.88))
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)

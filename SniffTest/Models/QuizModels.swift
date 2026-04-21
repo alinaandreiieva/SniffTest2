@@ -11,6 +11,7 @@ enum AppTab: Hashable {
     case quiz
     case checker
     case legal
+    case profile
 }
 
 enum QuizLevel: String, CaseIterable, Identifiable {

@@ -16,11 +16,9 @@ struct OnboardingView: View {
                 .ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 24) {
-                Spacer()
-
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Detect Disinformation")
-                        .font(.largeTitle.bold())
+                        .font(.largeTitle)
 
                     Text("Train yourself to spot misleading content before you share it.")
                         .font(.title3)
@@ -55,16 +53,21 @@ struct OnboardingView: View {
                     RoundedRectangle(cornerRadius: 28, style: .continuous)
                         .stroke(.indigo, lineWidth: 1)
                 )
+                .multilineTextAlignment(.leading)
 
                 Spacer()
 
-                Button(action: onStart) {
-                    Text("Start")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 16)
+                HStack {
+                    Spacer()
+                    Button(action: onStart) {
+                        Text("Start")
+                            .font(.headline)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 50)
+                    }
+                    .appPrimaryButtonStyle()
+                    Spacer()
                 }
-                .appPrimaryButtonStyle()
             }
             .padding(24)
         }

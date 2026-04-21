@@ -9,10 +9,16 @@ import SwiftUI
 
 enum AppTheme {
     static let background = Color(
+        red: 119.0 / 255.0,
+        green: 177.0 / 255.0,
+        blue: 212.0 / 255.0
+    ).opacity(0.2)
+
+    static let quizContainer = Color(
         red: 237.0 / 255.0,
         green: 232.0 / 255.0,
         blue: 208.0 / 255.0
-    ).opacity(0.2)
+    ).opacity(0.5)
 }
 
 private struct AdaptivePrimaryButtonStyleModifier: ViewModifier {

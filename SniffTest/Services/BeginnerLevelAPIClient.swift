@@ -54,8 +54,17 @@ struct BeginnerLevelAPIClient {
             throw BeginnerLevelAPIError.emptyPredictions
         }
 
-        debugLog("Predicted category: \(prediction.predictedCategory)")
-        debugLog("Confidence: \(prediction.confidence)")
+        if let predictedCategory = prediction.predictedCategory {
+            debugLog("Predicted category: \(predictedCategory)")
+        }
+
+        if let confidence = prediction.confidence {
+            debugLog("Confidence: \(confidence)")
+        }
+
+        if let label = prediction.label {
+            debugLog("Label: \(label)")
+        }
 
         return prediction
     }

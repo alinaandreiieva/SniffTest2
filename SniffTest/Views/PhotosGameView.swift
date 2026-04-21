@@ -45,7 +45,12 @@ struct PhotosGameView: View {
                 .disabled(viewModel.feedback != nil)
 
                 if let feedback = viewModel.feedback {
-                    FeedbackOverlayView(feedback: feedback, action: viewModel.advance)
+                    FeedbackOverlayView(
+                        feedback: feedback,
+                        actionTitle: viewModel.feedbackButtonTitle,
+                        isActionDisabled: viewModel.isLoadingBeginnerPrediction,
+                        action: viewModel.advance
+                    )
                         .padding(.horizontal, 24)
                         .transition(.scale(scale: 0.96).combined(with: .opacity))
                 }
@@ -54,9 +59,15 @@ struct PhotosGameView: View {
             .animation(.easeInOut, value: viewModel.isRoundComplete)
             .toolbar(viewModel.showsOverview ? .visible : .hidden, for: .tabBar)
             .toolbar {
-                if !viewModel.showsOverview && !viewModel.isRoundComplete {
+                if !viewModel.showsOverview {
                     ToolbarItem(placement: .topBarTrailing) {
-                        Button("End Game", action: viewModel.endRoundEarly)
+                        Button("End Game") {
+                            if viewModel.isRoundComplete {
+                                viewModel.returnToOverview()
+                            } else {
+                                viewModel.endRoundEarly()
+                            }
+                        }
                     }
                 }
             }
@@ -88,7 +99,7 @@ struct PhotosGameView: View {
                 QuizRuleRow(
                     icon: "3.circle.fill",
                     title: "Advanced",
-                    message: "Answer a timed mix of beginner and intermediate questions before the clock runs out."
+                    message: "Race through a timed set of images and decide whether each one is real or AI-generated."
                 )
                 QuizRuleRow(
                     icon: "text.bubble.fill",
@@ -149,20 +160,26 @@ struct PhotosGameView: View {
 
     private func questionCard(_ question: QuizQuestion) -> some View {
         VStack(alignment: .leading, spacing: 20) {
-            DemoQuestionMediaView(question: question)
+            if question.level == .advanced {
+                DemoQuestionMediaView(question: question)
 
-            VStack(alignment: .leading, spacing: 10) {
-                Text(question.title)
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(question.title)
+                        .font(.title3.weight(.semibold))
+
+                    Text(question.detail)
+                        .foregroundStyle(.secondary)
+                }
+            } else {
+                Text(textOnlyStatement(for: question))
                     .font(.title3.weight(.semibold))
-
-                Text(question.detail)
-                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
 
             VStack(spacing: 12) {
                 ForEach(question.answers) { answer in
                     AnswerButton(
-                        title: answer.label,
+                        title: question.label(for: answer),
                         isDisabled: viewModel.hasAnsweredCurrentQuestion,
                         isSelected: viewModel.selectedAnswer == answer
                     ) {
@@ -170,7 +187,6 @@ struct PhotosGameView: View {
                     }
                 }
             }
-
         }
         .padding(20)
         .background(
@@ -181,6 +197,14 @@ struct PhotosGameView: View {
             RoundedRectangle(cornerRadius: 30, style: .continuous)
                 .stroke(Color.black.opacity(0.08), lineWidth: 1)
         )
+    }
+
+    private func textOnlyStatement(for question: QuizQuestion) -> String {
+        if let statementText = question.statementText {
+            return statementText
+        }
+
+        return "\(question.title) \(question.detail)"
     }
 
     private var completionCard: some View {
@@ -292,6 +316,8 @@ private struct AnswerButton: View {
 
 private struct FeedbackOverlayView: View {
     let feedback: AnswerFeedback
+    let actionTitle: String
+    let isActionDisabled: Bool
     let action: () -> Void
 
     private var tint: Color {
@@ -333,12 +359,20 @@ private struct FeedbackOverlayView: View {
             }
 
             Button(action: action) {
-                Text("OK")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
+                HStack {
+                    if isActionDisabled {
+                        ProgressView()
+                            .tint(.white)
+                    }
+
+                    Text(actionTitle)
+                        .font(.headline)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 14)
             }
             .appPrimaryButtonStyle()
+            .disabled(isActionDisabled)
         }
         .padding(24)
         .frame(maxWidth: 360)
@@ -389,33 +423,45 @@ private struct DemoQuestionMediaView: View {
                     .background(.white.opacity(0.7), in: Capsule())
             }
 
-            ZStack {
-                RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            colors: palette,
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+            if let mediaAssetName = question.mediaAssetName {
+                Image(mediaAssetName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity)
+                    .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24, style: .continuous)
+                            .stroke(Color.black.opacity(0.08), lineWidth: 1)
                     )
-                    .frame(minHeight: 220)
+            } else {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: palette,
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(minHeight: 220)
 
-                VStack(spacing: 12) {
-                    Image(systemName: question.mediaSymbol)
-                        .font(.system(size: 48))
-                        .foregroundStyle(.primary)
+                    VStack(spacing: 12) {
+                        Image(systemName: question.mediaSymbol)
+                            .font(.system(size: 48))
+                            .foregroundStyle(.primary)
 
-                    Text(question.mediaHeadline)
-                        .font(.headline)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
+                        Text(question.mediaHeadline)
+                            .font(.headline)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+                    }
+                    .padding(24)
                 }
-                .padding(24)
-            }
 
-            Text("Demo visual for prototype. Replace with your real screenshot or photo later.")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
+                Text("Demo visual for prototype. Replace with your real screenshot or photo later.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 }

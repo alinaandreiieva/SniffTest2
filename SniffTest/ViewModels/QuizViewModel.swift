@@ -302,21 +302,37 @@ final class QuizViewModel: ObservableObject {
         baseExplanation: String,
         prediction: BeginnerPrediction
     ) -> String {
-        let confidenceText = prediction.confidence.formatted(.percent.precision(.fractionLength(1...2)))
-
         let probabilityLines = prediction.probabilities
             .sorted { $0.value > $1.value }
             .map { "\($0.key): \($0.value.formatted(.percent.precision(.fractionLength(1...2))))" }
             .joined(separator: ", ")
 
+        let fakeRealLines = [
+            prediction.probFake.map { "Fake: \($0.formatted(.percent.precision(.fractionLength(1...2))))" },
+            prediction.probReal.map { "Real: \($0.formatted(.percent.precision(.fractionLength(1...2))))" }
+        ]
+        .compactMap { $0 }
+        .joined(separator: ", ")
+
+        let detailLines = [
+            prediction.statement.map { "Statement: \($0)" },
+            prediction.label.map { "Label: \($0)" },
+            prediction.predictedCategory.map { "Category: \($0)" },
+            prediction.confidence.map { "Confidence: \($0.formatted(.percent.precision(.fractionLength(1...2))))" },
+            fakeRealLines.isEmpty ? nil : "Scores: \(fakeRealLines)",
+            probabilityLines.isEmpty ? nil : "Scores: \(probabilityLines)"
+        ]
+        .compactMap { $0 }
+        .joined(separator: "\n")
+
+        if detailLines.isEmpty {
+            return baseExplanation
+        }
+
         return """
         \(baseExplanation)
 
-        Beginner API result:
-        Statement: \(prediction.statement)
-        Category: \(prediction.predictedCategory)
-        Confidence: \(confidenceText)
-        Scores: \(probabilityLines)
+        \(detailLines)
         """
     }
 }

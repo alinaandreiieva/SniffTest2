@@ -111,6 +111,7 @@ struct QuizQuestion: Identifiable {
     let id = UUID()
     let title: String
     let detail: String
+    let statementText: String?
     let mediaSymbol: String
     let mediaHeadline: String
     let mediaSource: String
@@ -125,6 +126,7 @@ struct QuizQuestion: Identifiable {
     init(
         title: String,
         detail: String,
+        statementText: String? = nil,
         mediaSymbol: String,
         mediaHeadline: String,
         mediaSource: String,
@@ -138,6 +140,7 @@ struct QuizQuestion: Identifiable {
     ) {
         self.title = title
         self.detail = detail
+        self.statementText = statementText
         self.mediaSymbol = mediaSymbol
         self.mediaHeadline = mediaHeadline
         self.mediaSource = mediaSource
@@ -199,64 +202,69 @@ struct AnswerFeedback: Identifiable {
 enum QuizContent {
     static let beginnerQuestions: [QuizQuestion] = [
         QuizQuestion(
-            title: "A post says you must share it within 10 minutes to keep your bank account safe.",
-            detail: "There is no source, no official logo, and the message pushes urgency.",
+            title: "Decide whether this statement feels trustworthy.",
+            detail: "This one uses emotional language and pressure instead of evidence.",
+            statementText: "They are poisoning your children on purpose, and the corrupt media refuses to tell you. Share this before they delete it.",
             mediaSymbol: "exclamationmark.bubble.fill",
-            mediaHeadline: "Forward this now or your account may be frozen tonight.",
-            mediaSource: "Forwarded many times",
-            mediaBadge: "Urgent",
+            mediaHeadline: "Highly emotional viral post",
+            mediaSource: "Unknown repost account",
+            mediaBadge: "Likely fake",
             tone: .coral,
             level: .beginner,
             mode: .trueFalse(correctAnswer: false),
-            explanation: "Urgency without a trustworthy source is a common red flag. Real security notices point people to official channels instead of asking for viral sharing."
+            explanation: "This statement leans on fear and outrage instead of facts, sourcing, or verifiable evidence. That is a strong reason to treat it as misleading."
         ),
         QuizQuestion(
-            title: "An emergency weather update links to the local government website and matches the official social account.",
-            detail: "The post includes a timestamp and a direct link to the public alert page.",
+            title: "Decide whether this statement feels trustworthy.",
+            detail: "This one reads like a normal public service announcement and avoids sensational framing.",
+            statementText: "The city library will be closed on Friday for electrical maintenance. Updates are available on the municipal website and at the front desk.",
             mediaSymbol: "cloud.bolt.rain.fill",
-            mediaHeadline: "Storm alert in effect until 18:00. Check the city warning page for updates.",
-            mediaSource: "City Weather Office",
-            mediaBadge: "Verified",
+            mediaHeadline: "Routine public update",
+            mediaSource: "Community notice board",
+            mediaBadge: "Likely real",
             tone: .sky,
             level: .beginner,
             mode: .trueFalse(correctAnswer: true),
-            explanation: "This is the kind of evidence you want to see: a known source, a verifiable link, and details you can cross-check on the official site."
+            explanation: "This statement is specific, calm, and easy to verify. It does not try to manipulate the reader with panic, insults, or conspiratorial framing."
         ),
         QuizQuestion(
-            title: "A screenshot claims a new school policy starts tomorrow, but it has no date, no sender, and no school website.",
-            detail: "Friends are reposting it as if it were confirmed.",
+            title: "Decide whether this statement feels trustworthy.",
+            detail: "This one pushes a simplistic either-or choice to pressure the reader.",
+            statementText: "Either you support this law immediately, or you clearly hate your own country. There is no middle ground anymore.",
             mediaSymbol: "graduationcap.fill",
-            mediaHeadline: "New school rule starts tomorrow. Everyone must bring printed forms.",
-            mediaSource: "Screenshot shared in class chat",
-            mediaBadge: "No source",
+            mediaHeadline: "Polarizing social post",
+            mediaSource: "Political meme page",
+            mediaBadge: "Likely fake",
             tone: .amber,
             level: .beginner,
             mode: .trueFalse(correctAnswer: false),
-            explanation: "When a claim affects the public, missing dates and missing sourcing matter. A quick check against the school's official website or parent portal would come first."
+            explanation: "This statement forces a false choice and tries to shame disagreement. That kind of all-or-nothing framing is a common manipulation tactic."
         ),
         QuizQuestion(
-            title: "A public health graphic includes the agency logo, a publication date, and the same wording appears on the agency website.",
-            detail: "The visual is polished, but more importantly it is easy to verify independently.",
+            title: "Decide whether this statement feels trustworthy.",
+            detail: "This one sounds plain, specific, and checkable.",
+            statementText: "The museum opens at 10:00 on weekends and offers free entry to students with valid ID on the first Sunday of each month.",
             mediaSymbol: "cross.case.fill",
-            mediaHeadline: "Vaccination clinic open Saturday. Walk-ins accepted from 09:00 to 14:00.",
-            mediaSource: "Regional Health Agency",
-            mediaBadge: "Official",
+            mediaHeadline: "Informational listing",
+            mediaSource: "Visitor guide",
+            mediaBadge: "Likely real",
             tone: .mint,
             level: .beginner,
             mode: .trueFalse(correctAnswer: true),
-            explanation: "Good design alone does not prove accuracy, but here the message also has the things that matter: a named source, a date, and an easy way to confirm it."
+            explanation: "This statement presents ordinary logistical information in a neutral way. It does not rely on pressure, blame, or dramatic overstatement."
         ),
         QuizQuestion(
-            title: "A viral post says a supermarket is giving away free gift cards, but the only link leads to an unfamiliar survey site.",
-            detail: "The brand name is used in the image, but the web address does not match the company's real website.",
+            title: "Decide whether this statement feels trustworthy.",
+            detail: "This one uses vague numbers and crowd pressure instead of evidence.",
+            statementText: "Everyone knows the experts are lying because thousands of people online have already proved the truth. Wake up before it is too late.",
             mediaSymbol: "gift.fill",
-            mediaHeadline: "Claim your 100 euro store voucher before midnight.",
-            mediaSource: "Sponsored-looking repost",
-            mediaBadge: "Suspicious link",
+            mediaHeadline: "Crowd-pressure conspiracy post",
+            mediaSource: "Anonymous channel",
+            mediaBadge: "Likely fake",
             tone: .violet,
             level: .beginner,
             mode: .trueFalse(correctAnswer: false),
-            explanation: "A recognizable brand name does not make the claim trustworthy. If the link goes to an unrelated domain, that is a strong sign the post is misleading or a scam."
+            explanation: "This statement leans on anonymous mass agreement and urgency instead of concrete proof. That is a classic signal that the message may be manipulative."
         )
     ]
 

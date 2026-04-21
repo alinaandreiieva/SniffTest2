@@ -20,9 +20,12 @@ final class QuizViewModel: ObservableObject {
     @Published private(set) var didEndEarly = false
     @Published private(set) var numberOfCorrectAnswers = 0
     @Published private(set) var remainingTime = 0
+    @Published private(set) var isLoadingBeginnerPrediction = false
 
-    private let advancedTimeLimit = 12
+    private let advancedTimeLimit = 5
+    private let beginnerAPIClient = BeginnerLevelAPIClient()
     private var timer: Timer?
+    private var beginnerPredictionTask: Task<Void, Never>?
 
     init() {
         load(level: .beginner)
@@ -30,6 +33,7 @@ final class QuizViewModel: ObservableObject {
     }
 
     deinit {
+        beginnerPredictionTask?.cancel()
         stopTimer()
     }
 
@@ -81,9 +85,14 @@ final class QuizViewModel: ObservableObject {
         }
     }
 
+    var feedbackButtonTitle: String {
+        isLoadingBeginnerPrediction ? "Checking..." : "OK"
+    }
+
     func submit(_ answer: QuizAnswer) {
         guard let currentQuestion, !hasAnsweredCurrentQuestion, !isRoundComplete else { return }
 
+        beginnerPredictionTask?.cancel()
         hasAnsweredCurrentQuestion = true
         selectedAnswer = answer
         stopTimer()
@@ -93,15 +102,59 @@ final class QuizViewModel: ObservableObject {
             numberOfCorrectAnswers += 1
         }
 
-        feedback = AnswerFeedback(
-            title: isCorrect ? "Nice catch" : "Almost there",
-            message: currentQuestion.explanation,
-            kind: isCorrect ? .success : .warning
-        )
+        let feedbackTitle = isCorrect ? "Nice catch" : "Almost there"
+        let feedbackKind: FeedbackKind = isCorrect ? .success : .warning
+
+        if currentLevel == .beginner {
+            isLoadingBeginnerPrediction = true
+            feedback = AnswerFeedback(
+                title: feedbackTitle,
+                message: "Checking the beginner model for this statement...",
+                kind: feedbackKind
+            )
+
+            beginnerPredictionTask = Task { [weak self] in
+                guard let self else { return }
+
+                let message: String
+
+                do {
+                    let predictionInput = currentQuestion.statementText ?? currentQuestion.mediaHeadline
+                    let prediction = try await beginnerAPIClient.predict(text: predictionInput)
+                    message = beginnerFeedbackMessage(
+                        baseExplanation: currentQuestion.explanation,
+                        prediction: prediction
+                    )
+                } catch {
+                    let apiError = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+                    message = """
+                    \(currentQuestion.explanation)
+
+                    Beginner API check failed: \(apiError)
+                    """
+                }
+
+                guard !Task.isCancelled else { return }
+
+                feedback = AnswerFeedback(
+                    title: feedbackTitle,
+                    message: message,
+                    kind: feedbackKind
+                )
+                isLoadingBeginnerPrediction = false
+            }
+        } else {
+            isLoadingBeginnerPrediction = false
+            feedback = AnswerFeedback(
+                title: feedbackTitle,
+                message: currentQuestion.explanation,
+                kind: feedbackKind
+            )
+        }
     }
 
     func advance() {
-        guard hasAnsweredCurrentQuestion else { return }
+        guard hasAnsweredCurrentQuestion, !isLoadingBeginnerPrediction else { return }
 
         feedback = nil
         selectedAnswer = nil
@@ -143,16 +196,19 @@ final class QuizViewModel: ObservableObject {
     func endRoundEarly() {
         guard !showsOverview, !isRoundComplete else { return }
 
+        beginnerPredictionTask?.cancel()
         feedback = nil
         selectedAnswer = nil
         hasAnsweredCurrentQuestion = false
         isRoundComplete = true
         didEndEarly = true
         remainingTime = 0
+        isLoadingBeginnerPrediction = false
         stopTimer()
     }
 
     func returnToOverview() {
+        beginnerPredictionTask?.cancel()
         stopTimer()
         currentLevel = .beginner
         questions = questionsForLevel(.beginner)
@@ -164,10 +220,12 @@ final class QuizViewModel: ObservableObject {
         didEndEarly = false
         numberOfCorrectAnswers = 0
         remainingTime = 0
+        isLoadingBeginnerPrediction = false
         showsOverview = true
     }
 
     private func load(level: QuizLevel) {
+        beginnerPredictionTask?.cancel()
         showsOverview = false
         currentLevel = level
         questions = questionsForLevel(level)
@@ -179,6 +237,7 @@ final class QuizViewModel: ObservableObject {
         didEndEarly = false
         numberOfCorrectAnswers = 0
         remainingTime = showsTimer ? advancedTimeLimit : 0
+        isLoadingBeginnerPrediction = false
         startTimerIfNeeded()
     }
 
@@ -237,5 +296,27 @@ final class QuizViewModel: ObservableObject {
     private func stopTimer() {
         timer?.invalidate()
         timer = nil
+    }
+
+    private func beginnerFeedbackMessage(
+        baseExplanation: String,
+        prediction: BeginnerPrediction
+    ) -> String {
+        let confidenceText = prediction.confidence.formatted(.percent.precision(.fractionLength(1...2)))
+
+        let probabilityLines = prediction.probabilities
+            .sorted { $0.value > $1.value }
+            .map { "\($0.key): \($0.value.formatted(.percent.precision(.fractionLength(1...2))))" }
+            .joined(separator: ", ")
+
+        return """
+        \(baseExplanation)
+
+        Beginner API result:
+        Statement: \(prediction.statement)
+        Category: \(prediction.predictedCategory)
+        Confidence: \(confidenceText)
+        Scores: \(probabilityLines)
+        """
     }
 }

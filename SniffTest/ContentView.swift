@@ -8,17 +8,41 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var appViewModel = AppViewModel()
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Group {
+            if appViewModel.hasStarted {
+                TabView(selection: $appViewModel.selectedTab) {
+                    QuizTabView()
+                        .tabItem {
+                            Label("Quiz", systemImage: "questionmark.circle")
+                        }
+                        .tag(AppTab.quiz)
+
+                    CheckerTabView()
+                        .tabItem {
+                            Label("Checker", systemImage: "checkmark.shield")
+                        }
+                        .tag(AppTab.checker)
+
+                    LegalTabView()
+                        .tabItem {
+                            Label("Legal", systemImage: "doc.text")
+                        }
+                        .tag(AppTab.legal)
+                }
+            } else {
+                OnboardingView {
+                    appViewModel.startExperience()
+                }
+            }
         }
-        .padding()
     }
 }
 
-#Preview {
-    ContentView()
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
 }

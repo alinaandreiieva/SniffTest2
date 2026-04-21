@@ -9,11 +9,11 @@ import SwiftUI
 
 struct OnboardingView: View {
     private let introPages: [String] = [
-        "This game is an educational tool designed to develop users' ability to recognise common techniques of disinformation, including but not limited to loaded language, false dichotomy, manufactured consensus, cherry-picking, and whataboutism.",
-        "The content presented within the game, including images, texts, and statements, may include AI-generated or modified materials created for training and illustrative purposes. The game provides users with structured feedback and explanations for each task to enhance critical thinking and media literacy skills.",
+        "This game is an educational tool designed to develop users’ ability to recognise common techniques of disinformation, including but not limited to loaded language, false dichotomy, manufactured consensus, cherry-picking, and whataboutism.",
+        "The content presented within the game (including images, texts, and statements) may include AI-generated or modified materials created for training and illustrative purposes. The game provides users with structured feedback and explanations for each task to enhance critical thinking and media literacy skills.",
         "The game does not provide definitive verification of the objective truthfulness or falsity of real-world information. Instead, it focuses on identifying patterns and techniques commonly used in misleading or manipulative content.",
         "All outputs, feedback, and explanations generated within the game are probabilistic and educational in nature and should not be interpreted as factual conclusions or used as a basis for legal, journalistic, or other professional decision-making.",
-        "This tool is developed in line with principles and laws of European Union and Ukrainian legislation relevant to regulation of this problem.",
+        "This tool is developed in line with principles and laws of European union and Ukrainian legislation relevant to regulation of this problem.",
         "By continuing to use this game, you acknowledge that the tool serves solely educational purposes and does not replace independent critical evaluation of information."
     ]
 

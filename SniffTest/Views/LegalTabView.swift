@@ -27,54 +27,76 @@ struct LegalTabView: View {
                 "1. Freedom of Expression and Information Integrity",
                 "The platform is developed in accordance with Article 10 of the European Convention on Human Rights, which guarantees the right to freedom of expression, including the freedom to receive and impart information without interference by public authorities.",
                 "In Ukrainian legislation, this principle is reflected in Article 34 of the Constitution of Ukraine, which ensures freedom of thought and speech, as well as the right to freely collect, store, use, and disseminate information.",
-                "The platform does not restrict or moderate content. Instead, it adopts a non-interventionist approach by strengthening users' ability to independently assess information, in line with European standards on countering disinformation through media literacy rather than censorship.",
+                "The platform does not restrict or moderate content. Instead, it adopts a non-interventionist approach by strengthening users’ ability to independently assess information, in line with European standards on countering disinformation through media literacy rather than censorship.",
                 "2. Artificial Intelligence Regulation",
                 "The system is designed in accordance with the EU Artificial Intelligence Act (Regulation (EU) 2024/1689).",
-                "The platform does not fall within the category of high-risk AI systems, as defined in Article 6 and Annex III of the AI Act, since it does not perform automated decision-making producing legal effects or similarly significant impacts on individuals, materially influence the outcome of decision-making, or pose a significant risk to fundamental rights.",
-                "At the same time, the system complies with core regulatory principles reflected in the AI Act, including transparency obligations, clarity of system limitations, and protection of human autonomy."
-            ]
-        ),
-        LegalSection(
-            title: "3. Data Protection and Privacy",
-            paragraphs: [
-                "Data processing is carried out in accordance with the General Data Protection Regulation, in particular Article 5 on principles of data processing and Article 6 on lawfulness of processing.",
-                "In the Ukrainian context, the platform complies with the Law of Ukraine 'On Personal Data Protection' (Articles 6 and 7), which regulate lawful processing and protection of personal data.",
-                "The system does not process sensitive categories of data, including biometric identification data, and limits data use strictly to functional purposes."
+                "The platform does not fall within the category of high-risk AI systems, as defined in Article 6 and Annex III of the AI Act, since it does not:",
+                "perform automated decision-making producing legal effects or similarly significant impacts on individuals (“an AI system… shall be considered to be high-risk where… it is intended to be used as a safety component of a product… and… subject to third-party conformity assessment” – Article 6(1); meaning only such systems qualify as high-risk).",
+                "materially influence the outcome of decision-making or pose a significant risk to fundamental rights (“an AI system… shall not be considered to be high-risk where it does not pose a significant risk… including by not materially influencing the outcome of decision-making” – Article 6(3)).",
+                "At the same time, the system complies with core regulatory principles reflected in the AI Act, including:",
+                "Transparency obligations (“AI systems… [should be used] in a way that… makes humans aware that they interact with an AI system” – Recital 27; see also Article 50 on informing users of AI interaction).",
+                "Clarity of system limitations (“the AI system is intended to improve the result of a previously completed human activity” and “is not meant to replace or influence… human assessment, without proper human review” – Article 6(3)(b) – (c)).",
+                "Human autonomy protection (“AI-enabled manipulative techniques… may… impair autonomy, decision-making and free choice… and should therefore be prohibited” – Recital 29; see also Article 5(1)(a))."
             ]
         ),
         LegalSection(
             title: "4. Ukrainian Legal Context and Information Security",
             paragraphs: [
-                "The platform considers Ukrainian legislation on information and national security, including the Law of Ukraine 'On Information' and the Law of Ukraine 'On National Security of Ukraine'.",
-                "In this context, disinformation constitutes a recognised challenge. However, the platform adopts a proportionate legal approach by enhancing information resilience through education rather than imposing restrictions on content."
+                "The platform considers Ukrainian legislation on information and national security, including:",
+                "Law of Ukraine “On Information” (principles of information relations, including accuracy, completeness, and objectivity);",
+                "Law of Ukraine “On National Security of Ukraine” (recognition of information threats as part of national security risks).",
+                "In this context, disinformation constitutes a recognised challenge. However, the platform adopts a proportionate legal approach by enhancing information resilience through education rather than imposing restrictions on content.",
+                "In addition, the platform considers Ukrainian copyright legislation, in particular the Law of Ukraine “On Copyright and Related Rights”.",
+                "The platform uses content in a lawful manner, including:",
+                "AI-generated materials;",
+                "content used with permission or under applicable licences;",
+                "and materials used in a limited and transformative way for educational purposes.",
+                "The platform does not aim to reproduce or distribute copyrighted works as such, but rather to analyse and demonstrate patterns of disinformation, which reduces the risk of copyright infringement."
             ]
         ),
         LegalSection(
             title: "5. Liability and Risk Mitigation",
             paragraphs: [
-                "The platform functions as an educational and AI-assisted decision-support tool and does not establish factual truth, in line with the principle that AI systems should support human decision-making rather than replace it.",
-                "In line with general principles reflected in European digital regulation, the system does not produce binding or legally relevant decisions, does not replace professional judgement, and clearly communicates the probabilistic nature of outputs.",
-                "This approach reduces legal and ethical risks associated with misinformation, reputational harm, and overreliance on automated systems, in line with the objective of ensuring a high level of protection of fundamental rights.",
-                "In addition to the risks outlined above, the platform also considers technical and algorithmic risks inherent to AI systems, particularly those based on machine learning models such as Support Vector Machines and transformer-based models.",
-                "These include algorithmic bias, false positives and false negatives, overgeneralization, dataset limitations, lack of full explainability, automation bias, and risk of misuse.",
+                "The platform functions as an educational and AI-assisted decision-support tool and does not establish factual truth, in line with the principle that AI systems should support human decision-making rather than replace it (“AI should be a human-centric technology… serving as a tool for people” Recital 6,).",
+                "In line with general principles reflected in European digital regulation, the system:",
+                "does not produce binding or legally relevant decisions (“an AI system… shall not be considered to be high-risk where it does not… materially influence the outcome of decision-making” – Article 6(3));",
+                "does not replace professional judgement (“AI literacy should… equip persons… to make informed decisions” – Recital 20);",
+                "clearly communicates the probabilistic nature of outputs (“AI systems… should be used in a way that… makes humans aware that they interact with an AI system” – Recital 27; see also transparency obligations under Article 50).",
+                "This approach reduces legal and ethical risks associated with misinformation, reputational harm, and overreliance on automated systems, in line with the objective of ensuring a high level of protection of fundamental rights (“to ensure a high level of protection of… fundamental rights” – Recital 1,).",
+                "In addition to the risks outlined above, the platform also considers technical and algorithmic risks inherent to AI systems, particularly those based on machine learning models such as Support Vector Machines and transformer-based models (e.g., vector support machine, DistilBERT).",
+                "These include:",
+                "Algorithmic bias, where training data may introduce systematic distortions, potentially affecting the fairness and neutrality of outputs;",
+                "False positives and false negatives, where the system may incorrectly identify or fail to identify manipulative content;",
+                "Overgeneralization, particularly in natural language processing models, which may oversimplify complex statements or misinterpret context;",
+                "Dataset limitations, including incomplete, outdated, or culturally biased training data;",
+                "Lack of full explainability, due to the inherent complexity of machine learning models;",
+                "Automation bias, where users may place excessive trust in AI-generated outputs;",
+                "Risk of misuse, where outputs may be interpreted as authoritative or used outside the intended educational context.",
                 "These risks are mitigated through transparency, probabilistic outputs, clear disclaimers, and a design focused on supporting rather than replacing human judgment."
             ]
         ),
         LegalSection(
             title: "6. Ethical and Legal Design Principles.",
             paragraphs: [
-                "The platform is guided by the following legally relevant principles: neutrality, transparency, user autonomy, and educational purpose.",
+                "The platform is guided by the following legally relevant principles:",
+                "Neutrality (no political or ideological bias);",
+                "Transparency (clear explanation of outputs and AI involvement);",
+                "User autonomy (no coercion or manipulation of user behaviour);",
+                "Educational purpose (focus on skill development, not content control)."
             ]
         ),
         LegalSection(
             title: "7. Liability and Responsibility",
             paragraphs: [
                 "The platform operates as an educational and AI-assisted decision-support tool and does not produce legally binding outcomes or definitive assessments of truth.",
-                "Responsibility is distributed as follows: the provider is responsible for the design, transparency, and lawful functioning of the system, while the user or deployer is responsible for the interpretation and use of outputs, especially in external or professional contexts.",
-                "In line with the EU Artificial Intelligence Act, liability does not arise from the mere use of AI, but from non-compliance with legal obligations, including misleading design or manipulative practices.",
-                "Where user data is processed, responsibility also arises under the General Data Protection Regulation, in particular lawful processing requirements and data protection principles.",
-                "Under Ukrainian law, general liability follows from the obligation to compensate damage caused by unlawful actions under Article 1166 of the Civil Code of Ukraine, while freedom of information is guaranteed under Article 34 of the Constitution of Ukraine.",
-                "This allocation of responsibility reflects a role-based approach to AI governance and ensures legal clarity while preserving user autonomy and freedom of expression."
+                "Responsibility is distributed as follows:",
+                "Provider (developer) is responsible for the design, transparency, and lawful functioning of the system, including clear communication of its limitations (“laying down uniform obligations for operators” – Recital 3, EU Artificial Intelligence Act);",
+                "User/deployer is responsible for the interpretation and use of the outputs, particularly where such outputs are relied upon in external or professional contexts (the Regulation distinguishes roles of operators, including providers and deployers, Recital 12).",
+                "In line with the EU Artificial Intelligence Act, liability does not arise from the mere use of AI, but from non-compliance with legal obligations, including misleading design or manipulative practices (“AI-enabled manipulative techniques… may impair autonomy… and should therefore be prohibited” – Recital 29; Article 5(1)(a)).",
+                "Where user data is processed, responsibility also arises under the General Data Protection Regulation, in particular:",
+                "lawful processing requirements (“processing shall be lawful… only if…” – Article 6);",
+                "data protection principles (“personal data shall be… processed lawfully, fairly and in a transparent manner” – Article 5(1)(a)).",
+                "The project reflects a balance between these principles: it does not restrict or control content, but instead enhances users’ ability to critically assess information, thereby supporting freedom of expression while minimising potential legal risks."
             ]
         )
     ]

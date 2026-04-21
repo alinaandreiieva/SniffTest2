@@ -80,7 +80,7 @@ enum QuizAnswer: Equatable, Hashable, Identifiable {
     var label: String {
         switch self {
         case .boolean(let value):
-            return value ? "True" : "False"
+            return value ? "True" : "Bluff"
         case .category(let category):
             return category.rawValue
         }
@@ -168,7 +168,7 @@ struct QuizQuestion: Identifiable {
             if let booleanAnswerLabels {
                 return value ? booleanAnswerLabels.trueLabel : booleanAnswerLabels.falseLabel
             }
-            return value ? "True" : "False"
+            return value ? "True" : "Bluff"
         case .category(let category):
             return category.rawValue
         }
@@ -196,6 +196,7 @@ struct AnswerFeedback: Identifiable {
     let id = UUID()
     let title: String
     let message: String
+    let detailMessages: [String]
     let kind: FeedbackKind
 }
 
@@ -208,11 +209,12 @@ enum QuizContent {
             mediaSymbol: "exclamationmark.bubble.fill",
             mediaHeadline: "Highly emotional viral post",
             mediaSource: "Unknown repost account",
-            mediaBadge: "Likely fake",
+            mediaBadge: "Likely bluff",
             tone: .coral,
             level: .beginner,
             mode: .trueFalse(correctAnswer: false),
-            explanation: "This statement leans on fear and outrage instead of facts, sourcing, or verifiable evidence. That is a strong reason to treat it as misleading."
+            explanation: "This statement leans on fear and outrage instead of facts, sourcing, or verifiable evidence. That is a strong reason to treat it as misleading.",
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Bluff")
         ),
         QuizQuestion(
             title: "Decide whether this statement feels trustworthy.",
@@ -225,7 +227,8 @@ enum QuizContent {
             tone: .sky,
             level: .beginner,
             mode: .trueFalse(correctAnswer: true),
-            explanation: "This statement is specific, calm, and easy to verify. It does not try to manipulate the reader with panic, insults, or conspiratorial framing."
+            explanation: "This statement is specific, calm, and easy to verify. It does not try to manipulate the reader with panic, insults, or conspiratorial framing.",
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Bluff")
         ),
         QuizQuestion(
             title: "Decide whether this statement feels trustworthy.",
@@ -234,11 +237,12 @@ enum QuizContent {
             mediaSymbol: "graduationcap.fill",
             mediaHeadline: "Polarizing social post",
             mediaSource: "Political meme page",
-            mediaBadge: "Likely fake",
+            mediaBadge: "Likely bluff",
             tone: .amber,
             level: .beginner,
             mode: .trueFalse(correctAnswer: false),
-            explanation: "This statement forces a false choice and tries to shame disagreement. That kind of all-or-nothing framing is a common manipulation tactic."
+            explanation: "This statement forces a false choice and tries to shame disagreement. That kind of all-or-nothing framing is a common manipulation tactic.",
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Bluff")
         ),
         QuizQuestion(
             title: "Decide whether this statement feels trustworthy.",
@@ -251,7 +255,8 @@ enum QuizContent {
             tone: .mint,
             level: .beginner,
             mode: .trueFalse(correctAnswer: true),
-            explanation: "This statement presents ordinary logistical information in a neutral way. It does not rely on pressure, blame, or dramatic overstatement."
+            explanation: "This statement presents ordinary logistical information in a neutral way. It does not rely on pressure, blame, or dramatic overstatement.",
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Bluff")
         ),
         QuizQuestion(
             title: "Decide whether this statement feels trustworthy.",
@@ -260,11 +265,12 @@ enum QuizContent {
             mediaSymbol: "gift.fill",
             mediaHeadline: "Crowd-pressure conspiracy post",
             mediaSource: "Anonymous channel",
-            mediaBadge: "Likely fake",
+            mediaBadge: "Likely bluff",
             tone: .violet,
             level: .beginner,
             mode: .trueFalse(correctAnswer: false),
-            explanation: "This statement leans on anonymous mass agreement and urgency instead of concrete proof. That is a classic signal that the message may be manipulative."
+            explanation: "This statement leans on anonymous mass agreement and urgency instead of concrete proof. That is a classic signal that the message may be manipulative.",
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Bluff")
         )
     ]
 
@@ -356,7 +362,7 @@ enum QuizContent {
             level: .advanced,
             mode: .trueFalse(correctAnswer: true),
             explanation: "This image is real.",
-            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Bluff (AI)")
         ),
         QuizQuestion(
             title: "Real photo or AI image?",
@@ -370,7 +376,7 @@ enum QuizContent {
             level: .advanced,
             mode: .trueFalse(correctAnswer: true),
             explanation: "This image is real.",
-            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Bluff (AI)")
         ),
         QuizQuestion(
             title: "Real photo or AI image?",
@@ -384,7 +390,7 @@ enum QuizContent {
             level: .advanced,
             mode: .trueFalse(correctAnswer: false),
             explanation: "This image is AI-generated.",
-            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Bluff (AI)")
         ),
         QuizQuestion(
             title: "Real photo or AI image?",
@@ -398,7 +404,7 @@ enum QuizContent {
             level: .advanced,
             mode: .trueFalse(correctAnswer: false),
             explanation: "This image is AI-generated.",
-            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Bluff (AI)")
         ),
         QuizQuestion(
             title: "Real photo or AI image?",
@@ -412,7 +418,7 @@ enum QuizContent {
             level: .advanced,
             mode: .trueFalse(correctAnswer: true),
             explanation: "This image is real.",
-            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Bluff (AI)")
         ),
         QuizQuestion(
             title: "Real photo or AI image?",
@@ -426,7 +432,7 @@ enum QuizContent {
             level: .advanced,
             mode: .trueFalse(correctAnswer: false),
             explanation: "This image is AI-generated.",
-            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Bluff (AI)")
         ),
         QuizQuestion(
             title: "Real photo or AI image?",
@@ -440,7 +446,7 @@ enum QuizContent {
             level: .advanced,
             mode: .trueFalse(correctAnswer: true),
             explanation: "This image is real.",
-            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Bluff (AI)")
         ),
         QuizQuestion(
             title: "Real photo or AI image?",
@@ -454,7 +460,7 @@ enum QuizContent {
             level: .advanced,
             mode: .trueFalse(correctAnswer: false),
             explanation: "This image is AI-generated.",
-            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Bluff (AI)")
         ),
         QuizQuestion(
             title: "Real photo or AI image?",
@@ -468,7 +474,7 @@ enum QuizContent {
             level: .advanced,
             mode: .trueFalse(correctAnswer: true),
             explanation: "This image is real.",
-            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Bluff (AI)")
         ),
         QuizQuestion(
             title: "Real photo or AI image?",
@@ -482,7 +488,7 @@ enum QuizContent {
             level: .advanced,
             mode: .trueFalse(correctAnswer: false),
             explanation: "This image is AI-generated.",
-            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Fake (AI)")
+            booleanAnswerLabels: BooleanAnswerLabels(trueLabel: "Real", falseLabel: "Bluff (AI)")
         )
     ]
 }

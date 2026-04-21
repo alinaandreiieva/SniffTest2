@@ -42,7 +42,6 @@ struct CheckerTabView: View {
                     .padding(24)
                 }
             }
-            .navigationTitle("Room")
             .animation(.spring(response: 0.32, dampingFraction: 0.8), value: viewModel.phase)
             .onAppear {
                 withAnimation(.easeOut(duration: 0.35)) {

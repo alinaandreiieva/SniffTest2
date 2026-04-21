@@ -1,7 +1,7 @@
 # SniffTest Presentation Overview
 
 ## Onboarding View
-This is the app's introduction and disclaimer flow. It explains that SniffTest is an educational tool for recognizing disinformation techniques, sets expectations around AI-generated content and probabilistic outputs, and prepares the user before entering the app.
+This is the app's introduction, also known as onboarding. It explains that the app is an educational tool for recognizing disinformation techniques, sets expectations around AI-generated content, and prepares the user before entering the app.
 
 ## Quiz View
 This is the main learning space of the app. Users move through three levels of difficulty, starting with simple true-or-bluff decisions, then identifying specific disinformation techniques, and finally judging whether images are real or AI-generated under time pressure.

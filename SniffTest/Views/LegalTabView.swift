@@ -40,7 +40,7 @@ struct LegalTabView: View {
             ]
         ),
         LegalSection(
-            title: "4. Ukrainian Legal Context and Information Security",
+            title: "Ukrainian Legal Context and Information Security",
             paragraphs: [
                 "The platform considers Ukrainian legislation on information and national security, including:",
                 "Law of Ukraine “On Information” (principles of information relations, including accuracy, completeness, and objectivity);",
@@ -55,7 +55,7 @@ struct LegalTabView: View {
             ]
         ),
         LegalSection(
-            title: "5. Liability and Risk Mitigation",
+            title: "Liability and Risk Mitigation",
             paragraphs: [
                 "The platform functions as an educational and AI-assisted decision-support tool and does not establish factual truth, in line with the principle that AI systems should support human decision-making rather than replace it (“AI should be a human-centric technology… serving as a tool for people” Recital 6,).",
                 "In line with general principles reflected in European digital regulation, the system:",
@@ -76,7 +76,7 @@ struct LegalTabView: View {
             ]
         ),
         LegalSection(
-            title: "6. Ethical and Legal Design Principles.",
+            title: "Ethical and Legal Design Principles.",
             paragraphs: [
                 "The platform is guided by the following legally relevant principles:",
                 "Neutrality (no political or ideological bias);",
@@ -86,7 +86,7 @@ struct LegalTabView: View {
             ]
         ),
         LegalSection(
-            title: "7. Liability and Responsibility",
+            title: "Liability and Responsibility",
             paragraphs: [
                 "The platform operates as an educational and AI-assisted decision-support tool and does not produce legally binding outcomes or definitive assessments of truth.",
                 "Responsibility is distributed as follows:",
@@ -132,10 +132,12 @@ struct LegalTabView: View {
     }
 
     private func toggle(_ id: String) {
-        if expandedSections.contains(id) {
-            expandedSections.remove(id)
-        } else {
-            expandedSections.insert(id)
+        withAnimation(.spring(response: 0.38, dampingFraction: 0.86)) {
+            if expandedSections.contains(id) {
+                expandedSections.remove(id)
+            } else {
+                expandedSections.insert(id)
+            }
         }
     }
 }
@@ -173,16 +175,29 @@ private struct LegalDropdownSection: View {
 
             if isExpanded {
                 VStack(alignment: .leading, spacing: 14) {
-                    ForEach(Array(section.paragraphs.enumerated()), id: \.offset) { _, paragraph in
+                    ForEach(Array(section.paragraphs.enumerated()), id: \.offset) { index, paragraph in
                         Text(paragraph)
                             .font(.body)
                             .foregroundStyle(.primary)
                             .fixedSize(horizontal: false, vertical: true)
+                            .transition(.opacity.combined(with: .offset(y: -10)))
+                            .animation(
+                                .easeOut(duration: 0.24).delay(Double(index) * 0.03),
+                                value: isExpanded
+                            )
                     }
                 }
                 .padding(.horizontal, 20)
                 .padding(.bottom, 20)
-                .transition(.opacity.combined(with: .move(edge: .top)))
+                .clipped()
+                .transition(
+                    .asymmetric(
+                        insertion: .opacity
+                            .combined(with: .move(edge: .top))
+                            .combined(with: .scale(scale: 0.98, anchor: .top)),
+                        removal: .opacity
+                    )
+                )
             }
         }
         .background(AppTheme.quizContainer, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
@@ -190,6 +205,6 @@ private struct LegalDropdownSection: View {
             RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .stroke(Color.black.opacity(0.08), lineWidth: 1)
         )
-        .animation(.easeInOut(duration: 0.2), value: isExpanded)
+        .animation(.spring(response: 0.38, dampingFraction: 0.86), value: isExpanded)
     }
 }

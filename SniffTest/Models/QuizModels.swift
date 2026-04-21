@@ -149,6 +149,8 @@ struct AnswerFeedback: Identifiable {
 }
 
 enum QuizContent {
+    static let questionsPerLevel = 5
+
     static let beginnerQuestions: [QuizQuestion] = [
         QuizQuestion(
             title: "A post says you must share it within 10 minutes to keep your bank account safe.",
@@ -197,6 +199,18 @@ enum QuizContent {
             level: .beginner,
             mode: .trueFalse(correctAnswer: true),
             explanation: "Good design alone does not prove accuracy, but here the message also has the things that matter: a named source, a date, and an easy way to confirm it."
+        ),
+        QuizQuestion(
+            title: "A viral post says a supermarket is giving away free gift cards, but the only link leads to an unfamiliar survey site.",
+            detail: "The brand name is used in the image, but the web address does not match the company's real website.",
+            mediaSymbol: "gift.fill",
+            mediaHeadline: "Claim your 100 euro store voucher before midnight.",
+            mediaSource: "Sponsored-looking repost",
+            mediaBadge: "Suspicious link",
+            tone: .violet,
+            level: .beginner,
+            mode: .trueFalse(correctAnswer: false),
+            explanation: "A recognizable brand name does not make the claim trustworthy. If the link goes to an unrelated domain, that is a strong sign the post is misleading or a scam."
         )
     ]
 
@@ -260,6 +274,18 @@ enum QuizContent {
             level: .intermediate,
             mode: .category(correctCategory: .falseContext),
             explanation: "This is another false context example: the media is real, but the surrounding framing creates a false takeaway."
+        ),
+        QuizQuestion(
+            title: "A fake charity page copies the name and visual style of a real relief organization to collect donations.",
+            detail: "The branding is close enough to confuse people, but the account is not operated by the real group.",
+            mediaSymbol: "heart.text.square.fill",
+            mediaHeadline: "Donate here to the official emergency response fund.",
+            mediaSource: "Relief Hands Worldwidee",
+            mediaBadge: "Copied identity",
+            tone: .coral,
+            level: .intermediate,
+            mode: .category(correctCategory: .imposterContent),
+            explanation: "This is imposter content because the post is pretending to come from a trusted organization in order to borrow its credibility."
         )
     ]
 }

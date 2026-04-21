@@ -32,6 +32,9 @@ struct ContentView: View {
                         }
                         .tag(AppTab.legal)
                 }
+                .background(AppTheme.background.ignoresSafeArea())
+                .toolbarBackground(AppTheme.background, for: .tabBar)
+                .toolbarBackground(.visible, for: .tabBar)
             } else {
                 OnboardingView {
                     appViewModel.startExperience()

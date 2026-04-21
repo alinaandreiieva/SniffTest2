@@ -10,11 +10,16 @@ import SwiftUI
 struct LegalTabView: View {
     var body: some View {
         NavigationStack {
-            ContentUnavailableView(
-                "Legal",
-                systemImage: "doc.text",
-                description: Text("Prototype placeholder for legal guidance and references.")
-            )
+            ZStack {
+                AppTheme.background
+                    .ignoresSafeArea()
+
+                ContentUnavailableView(
+                    "Legal",
+                    systemImage: "doc.text",
+                    description: Text("Prototype placeholder for legal guidance and references.")
+                )
+            }
         }
     }
 }

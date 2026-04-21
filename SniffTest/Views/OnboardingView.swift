@@ -12,12 +12,8 @@ struct OnboardingView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                colors: [.cyan.opacity(0.22), .indigo.opacity(0.16), .white],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+            AppTheme.background
+                .ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 24) {
                 Spacer()
@@ -54,7 +50,11 @@ struct OnboardingView: View {
                     )
                 }
                 .padding(24)
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+                .background(.white, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 28, style: .continuous)
+                        .stroke(.indigo, lineWidth: 1)
+                )
 
                 Spacer()
 
@@ -64,8 +64,7 @@ struct OnboardingView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(.indigo)
+                .appPrimaryButtonStyle()
             }
             .padding(24)
         }

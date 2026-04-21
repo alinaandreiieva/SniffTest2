@@ -12,24 +12,37 @@ struct PhotosGameView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    levelHeader
+            ZStack {
+                AppTheme.background
+                    .ignoresSafeArea()
 
-                    if let feedback = viewModel.feedback {
-                        ExplanationBannerView(feedback: feedback)
-                            .transition(.move(edge: .top).combined(with: .opacity))
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        levelHeader
+
+                        if viewModel.isRoundComplete {
+                            completionCard
+                        } else if let question = viewModel.currentQuestion {
+                            questionCard(question)
+                        }
                     }
-
-                    if viewModel.isRoundComplete {
-                        completionCard
-                    } else if let question = viewModel.currentQuestion {
-                        questionCard(question)
+                    .padding()
+                }
+                .blur(radius: viewModel.feedback == nil ? 0 : 2)
+                .overlay {
+                    if viewModel.feedback != nil {
+                        Color.black.opacity(0.18)
+                            .ignoresSafeArea()
                     }
                 }
-                .padding()
+                .disabled(viewModel.feedback != nil)
+
+                if let feedback = viewModel.feedback {
+                    FeedbackOverlayView(feedback: feedback, action: viewModel.advance)
+                        .padding(.horizontal, 24)
+                        .transition(.scale(scale: 0.96).combined(with: .opacity))
+                }
             }
-            .navigationTitle("Quiz")
             .animation(.spring(duration: 0.3), value: viewModel.feedback?.id)
             .animation(.easeInOut, value: viewModel.isRoundComplete)
         }
@@ -86,21 +99,15 @@ struct PhotosGameView: View {
                 }
             }
 
-            if viewModel.hasAnsweredCurrentQuestion {
-                Button(action: viewModel.advance) {
-                    Text("Next")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.indigo)
-            }
         }
         .padding(20)
         .background(
             RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(Color(.secondarySystemBackground))
+                .fill(AppTheme.background)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 30, style: .continuous)
+                .stroke(Color.black.opacity(0.08), lineWidth: 1)
         )
     }
 
@@ -126,8 +133,7 @@ struct PhotosGameView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.indigo)
+            .appPrimaryButtonStyle()
 
             Button(action: viewModel.restartCurrentLevel) {
                 Text("Restart Level")
@@ -149,7 +155,11 @@ struct PhotosGameView: View {
         .padding(24)
         .background(
             RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(Color(.secondarySystemBackground))
+                .fill(AppTheme.background)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 30, style: .continuous)
+                .stroke(Color.black.opacity(0.08), lineWidth: 1)
         )
     }
 }
@@ -172,7 +182,7 @@ private struct AnswerButton: View {
             .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(isSelected ? Color.indigo.opacity(0.14) : Color(.systemBackground))
+                    .fill(isSelected ? Color.indigo.opacity(0.14) : AppTheme.background)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
@@ -185,8 +195,9 @@ private struct AnswerButton: View {
     }
 }
 
-private struct ExplanationBannerView: View {
+private struct FeedbackOverlayView: View {
     let feedback: AnswerFeedback
+    let action: () -> Void
 
     private var tint: Color {
         switch feedback.kind {
@@ -211,26 +222,37 @@ private struct ExplanationBannerView: View {
     }
 
     var body: some View {
-        HStack(alignment: .top, spacing: 14) {
+        VStack(spacing: 18) {
             Image(systemName: iconName)
-                .font(.title3)
+                .font(.system(size: 28, weight: .semibold))
                 .foregroundStyle(tint)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .center, spacing: 8) {
                 Text(feedback.title)
-                    .font(.headline)
+                    .font(.title3.weight(.semibold))
 
                 Text(feedback.message)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
             }
+
+            Button(action: action) {
+                Text("OK")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+            }
+            .appPrimaryButtonStyle()
         }
-        .padding(16)
-        .background(tint.opacity(0.12), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .padding(24)
+        .frame(maxWidth: 360)
+        .background(.white, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .stroke(tint.opacity(0.24), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .stroke(tint.opacity(0.35), lineWidth: 1.5)
         )
+        .shadow(color: .black.opacity(0.12), radius: 24, y: 12)
     }
 }
 

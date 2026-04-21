@@ -145,7 +145,7 @@ final class QuizViewModel: ObservableObject {
         case .intermediate:
             return QuizContent.intermediateQuestions
         case .advanced:
-            return Array((QuizContent.beginnerQuestions + QuizContent.intermediateQuestions).shuffled().prefix(6))
+            return Array((QuizContent.beginnerQuestions + QuizContent.intermediateQuestions).shuffled().prefix(QuizContent.questionsPerLevel))
         }
     }
 

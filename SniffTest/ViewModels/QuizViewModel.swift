@@ -9,6 +9,7 @@ import Combine
 import Foundation
 
 final class QuizViewModel: ObservableObject {
+    @Published private(set) var showsOverview = true
     @Published private(set) var currentLevel: QuizLevel = .beginner
     @Published private(set) var questions: [QuizQuestion] = []
     @Published private(set) var currentQuestionIndex = 0
@@ -25,6 +26,7 @@ final class QuizViewModel: ObservableObject {
 
     init() {
         load(level: .beginner)
+        showsOverview = true
     }
 
     deinit {
@@ -134,8 +136,12 @@ final class QuizViewModel: ObservableObject {
         load(level: .beginner)
     }
 
+    func startQuiz() {
+        showsOverview = false
+    }
+
     func endRoundEarly() {
-        guard !isRoundComplete else { return }
+        guard !showsOverview, !isRoundComplete else { return }
 
         feedback = nil
         selectedAnswer = nil
@@ -147,6 +153,7 @@ final class QuizViewModel: ObservableObject {
     }
 
     private func load(level: QuizLevel) {
+        showsOverview = false
         currentLevel = level
         questions = questionsForLevel(level)
         currentQuestionIndex = 0

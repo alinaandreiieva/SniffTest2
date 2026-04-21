@@ -8,11 +8,6 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    private enum Step {
-        case introduction
-        case overview
-    }
-
     private let introPages: [String] = [
         "This game is an educational tool designed to develop users' ability to recognise common techniques of disinformation, including but not limited to loaded language, false dichotomy, manufactured consensus, cherry-picking, and whataboutism.",
         "The content presented within the game, including images, texts, and statements, may include AI-generated or modified materials created for training and illustrative purposes. The game provides users with structured feedback and explanations for each task to enhance critical thinking and media literacy skills.",
@@ -23,7 +18,6 @@ struct OnboardingView: View {
     ]
 
     let onStart: () -> Void
-    @State private var step: Step = .introduction
     @State private var introPage = 0
 
     var body: some View {
@@ -32,14 +26,7 @@ struct OnboardingView: View {
                 .ignoresSafeArea()
 
             ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    switch step {
-                    case .introduction:
-                        introductionStep
-                    case .overview:
-                        overviewStep
-                    }
-                }
+                introductionStep
                 .padding(24)
             }
         }
@@ -112,103 +99,15 @@ struct OnboardingView: View {
                             introPage += 1
                         }
                     } else {
-                        step = .overview
+                        onStart()
                     }
                 } label: {
-                    Text(introPage == introPages.count - 1 ? "Continue" : "Next")
+                    Text(introPage == introPages.count - 1 ? "Enter App" : "Next")
                         .font(.headline)
                         .padding(.vertical, 8)
                         .padding(.horizontal, 40)
                 }
                 .appPrimaryButtonStyle()
-            }
-        }
-    }
-
-    private var overviewStep: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Detect Disinformation")
-                    .font(.largeTitle.bold())
-
-                Text("Train yourself to spot misleading content before you share it.")
-                    .font(.title3)
-                    .foregroundStyle(.secondary)
-            }
-
-            VStack(alignment: .leading, spacing: 16) {
-                RuleRow(
-                    icon: "1.circle.fill",
-                    title: "Beginner",
-                    message: "Read a short post and decide whether it feels trustworthy: true or false."
-                )
-                RuleRow(
-                    icon: "2.circle.fill",
-                    title: "Intermediate",
-                    message: "Name the type of disinformation, like false context, parody, or manipulated content."
-                )
-                RuleRow(
-                    icon: "3.circle.fill",
-                    title: "Advanced",
-                    message: "Answer a timed mix of beginner and intermediate questions before the clock runs out."
-                )
-                RuleRow(
-                    icon: "text.bubble.fill",
-                    title: "After every answer",
-                    message: "You will get a friendly explanation banner so the app teaches, not just scores."
-                )
-            }
-            .padding(24)
-            .background(.white, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: 28, style: .continuous)
-                    .stroke(.indigo, lineWidth: 1)
-            )
-            .multilineTextAlignment(.leading)
-
-            HStack {
-                Spacer()
-                Button(action: onStart) {
-                    Text("Start")
-                        .font(.headline)
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 50)
-                }
-                .appPrimaryButtonStyle()
-                Spacer()
-            }
-
-            HStack {
-                Spacer()
-                Button("Back") {
-                    step = .introduction
-                }
-                .buttonStyle(.plain)
-                .foregroundStyle(.secondary)
-                Spacer()
-            }
-        }
-    }
-}
-
-private struct RuleRow: View {
-    let icon: String
-    let title: String
-    let message: String
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 14) {
-            Image(systemName: icon)
-                .font(.title3)
-                .foregroundStyle(.indigo)
-                .frame(width: 28)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.headline)
-
-                Text(message)
-                    .foregroundStyle(.secondary)
             }
         }
     }

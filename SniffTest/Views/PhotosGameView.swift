@@ -18,15 +18,22 @@ struct PhotosGameView: View {
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
-                        levelHeader
+                        if viewModel.showsOverview {
+                            overviewCard
+                        } else {
+                            levelHeader
+                        }
 
-                        if viewModel.isRoundComplete {
+                        if viewModel.showsOverview {
+                            EmptyView()
+                        } else if viewModel.isRoundComplete {
                             completionCard
                         } else if let question = viewModel.currentQuestion {
                             questionCard(question)
                         }
                     }
                     .padding(.horizontal)
+                    .padding(.top)
                 }
                 .blur(radius: viewModel.feedback == nil ? 0 : 2)
                 .overlay {
@@ -45,15 +52,72 @@ struct PhotosGameView: View {
             }
             .animation(.spring(duration: 0.3), value: viewModel.feedback?.id)
             .animation(.easeInOut, value: viewModel.isRoundComplete)
-            .toolbar(viewModel.isRoundComplete ? .visible : .hidden, for: .tabBar)
+            .toolbar(viewModel.showsOverview ? .visible : .hidden, for: .tabBar)
             .toolbar {
-                if !viewModel.isRoundComplete {
+                if !viewModel.showsOverview && !viewModel.isRoundComplete {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button("End Game", action: viewModel.endRoundEarly)
                     }
                 }
             }
         }
+    }
+
+    private var overviewCard: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Detect Disinformation")
+                    .font(.largeTitle.bold())
+
+                Text("Train yourself to spot misleading content before you share it.")
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
+            }
+
+            VStack(alignment: .leading, spacing: 16) {
+                QuizRuleRow(
+                    icon: "1.circle.fill",
+                    title: "Beginner",
+                    message: "Read a short post and decide whether it feels trustworthy: true or false."
+                )
+                QuizRuleRow(
+                    icon: "2.circle.fill",
+                    title: "Intermediate",
+                    message: "Name the type of disinformation, like false context, parody, or manipulated content."
+                )
+                QuizRuleRow(
+                    icon: "3.circle.fill",
+                    title: "Advanced",
+                    message: "Answer a timed mix of beginner and intermediate questions before the clock runs out."
+                )
+                QuizRuleRow(
+                    icon: "text.bubble.fill",
+                    title: "After every answer",
+                    message: "You will get a friendly explanation banner so the app teaches, not just scores."
+                )
+            }
+            .padding(24)
+            .background(.white, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 28, style: .continuous)
+                    .stroke(.indigo, lineWidth: 1)
+            )
+            
+            Spacer()
+
+            HStack {
+                Spacer()
+                Button(action: viewModel.startQuiz) {
+                    Text("Start")
+                        .font(.headline)
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 52)
+                }
+                .appPrimaryButtonStyle()
+                Spacer()
+            }
+        }
+        .padding(.top, 8)
     }
 
     private var levelHeader: some View {
@@ -169,6 +233,29 @@ struct PhotosGameView: View {
             RoundedRectangle(cornerRadius: 30, style: .continuous)
                 .stroke(Color.black.opacity(0.08), lineWidth: 1)
         )
+    }
+}
+
+private struct QuizRuleRow: View {
+    let icon: String
+    let title: String
+    let message: String
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 14) {
+            Image(systemName: icon)
+                .font(.title3)
+                .foregroundStyle(.indigo)
+                .frame(width: 28)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+
+                Text(message)
+                    .foregroundStyle(.secondary)
+            }
+        }
     }
 }
 

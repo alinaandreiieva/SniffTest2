@@ -26,7 +26,7 @@ struct PhotosGameView: View {
                             questionCard(question)
                         }
                     }
-                    .padding()
+                    .padding(.horizontal)
                 }
                 .blur(radius: viewModel.feedback == nil ? 0 : 2)
                 .overlay {
@@ -46,6 +46,13 @@ struct PhotosGameView: View {
             .animation(.spring(duration: 0.3), value: viewModel.feedback?.id)
             .animation(.easeInOut, value: viewModel.isRoundComplete)
             .toolbar(viewModel.isRoundComplete ? .visible : .hidden, for: .tabBar)
+            .toolbar {
+                if !viewModel.isRoundComplete {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("End Game", action: viewModel.endRoundEarly)
+                    }
+                }
+            }
         }
     }
 
@@ -73,16 +80,6 @@ struct PhotosGameView: View {
             }
             .font(.subheadline)
             .foregroundStyle(.secondary)
-
-            if !viewModel.isRoundComplete {
-                HStack {
-                    Spacer()
-
-                    Button("End Game", action: viewModel.endRoundEarly)
-                        .buttonStyle(.bordered)
-                        .tint(.secondary)
-                }
-            }
         }
     }
 

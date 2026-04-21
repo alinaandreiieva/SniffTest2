@@ -22,7 +22,7 @@ struct ContentView: View {
 
                     CheckerTabView()
                         .tabItem {
-                            Label("Checker", systemImage: "checkmark.shield")
+                            Label("Room", systemImage: "checkmark.shield")
                         }
                         .tag(AppTab.checker)
 

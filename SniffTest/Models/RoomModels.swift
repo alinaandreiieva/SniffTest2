@@ -26,6 +26,7 @@ enum RoomMode: String, CaseIterable, Identifiable {
 enum RoomPhase {
     case setup
     case lobby
+    case game
 }
 
 struct RoomPlayer: Identifiable, Equatable {

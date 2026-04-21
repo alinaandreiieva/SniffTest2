@@ -16,6 +16,7 @@ final class QuizViewModel: ObservableObject {
     @Published private(set) var selectedAnswer: QuizAnswer?
     @Published private(set) var hasAnsweredCurrentQuestion = false
     @Published private(set) var isRoundComplete = false
+    @Published private(set) var didEndEarly = false
     @Published private(set) var numberOfCorrectAnswers = 0
     @Published private(set) var remainingTime = 0
 
@@ -49,6 +50,10 @@ final class QuizViewModel: ObservableObject {
     }
 
     var completionMessage: String {
+        if didEndEarly {
+            return "You ended this round early. You can restart this level or continue when you're ready."
+        }
+
         switch currentLevel {
         case .beginner:
             return "You handled the core red flags. Next up: naming the exact disinformation technique."
@@ -57,6 +62,10 @@ final class QuizViewModel: ObservableObject {
         case .advanced:
             return "Nice work. You completed the timed mixed challenge."
         }
+    }
+
+    var completionTitle: String {
+        didEndEarly ? "\(currentLevel.title) ended early" : currentLevel.completionTitle
     }
 
     var primaryCompletionActionTitle: String {
@@ -125,6 +134,18 @@ final class QuizViewModel: ObservableObject {
         load(level: .beginner)
     }
 
+    func endRoundEarly() {
+        guard !isRoundComplete else { return }
+
+        feedback = nil
+        selectedAnswer = nil
+        hasAnsweredCurrentQuestion = false
+        isRoundComplete = true
+        didEndEarly = true
+        remainingTime = 0
+        stopTimer()
+    }
+
     private func load(level: QuizLevel) {
         currentLevel = level
         questions = questionsForLevel(level)
@@ -133,6 +154,7 @@ final class QuizViewModel: ObservableObject {
         selectedAnswer = nil
         hasAnsweredCurrentQuestion = false
         isRoundComplete = false
+        didEndEarly = false
         numberOfCorrectAnswers = 0
         remainingTime = showsTimer ? advancedTimeLimit : 0
         startTimerIfNeeded()

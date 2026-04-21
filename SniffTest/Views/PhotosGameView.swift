@@ -45,6 +45,7 @@ struct PhotosGameView: View {
             }
             .animation(.spring(duration: 0.3), value: viewModel.feedback?.id)
             .animation(.easeInOut, value: viewModel.isRoundComplete)
+            .toolbar(viewModel.isRoundComplete ? .visible : .hidden, for: .tabBar)
         }
     }
 
@@ -72,6 +73,16 @@ struct PhotosGameView: View {
             }
             .font(.subheadline)
             .foregroundStyle(.secondary)
+
+            if !viewModel.isRoundComplete {
+                HStack {
+                    Spacer()
+
+                    Button("End Game", action: viewModel.endRoundEarly)
+                        .buttonStyle(.bordered)
+                        .tint(.secondary)
+                }
+            }
         }
     }
 
@@ -113,7 +124,7 @@ struct PhotosGameView: View {
 
     private var completionCard: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Text(viewModel.currentLevel.completionTitle)
+            Text(viewModel.completionTitle)
                 .font(.title2.bold())
 
             Text(viewModel.completionMessage)

@@ -14,11 +14,7 @@ enum AppTheme {
         blue: 212.0 / 255.0
     ).opacity(0.2)
 
-    static let quizContainer = Color(
-        red: 237.0 / 255.0,
-        green: 232.0 / 255.0,
-        blue: 208.0 / 255.0
-    ).opacity(0.5)
+    static let quizContainer = Color(.white)
 }
 
 private struct AdaptivePrimaryButtonStyleModifier: ViewModifier {
